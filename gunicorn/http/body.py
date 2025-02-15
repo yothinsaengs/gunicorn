@@ -7,7 +7,7 @@ import sys
 
 from gunicorn.http.errors import (NoMoreData, ChunkMissingTerminator,
                                   InvalidChunkSize)
-
+from time import time
 
 class ChunkedReader:
     def __init__(self, req, unreader):
@@ -216,13 +216,14 @@ class Body:
             self.buf = io.BytesIO()
             self.buf.write(rest)
             return ret
-
+        st = time()
         while size > self.buf.tell():
             data = self.reader.read(1024**2)
             if not data:
                 break
             self.buf.write(data)
-
+        ed = time()
+        print(f'{(ed - st)*1000} ms for reading file')
         data = self.buf.getvalue()
         ret, rest = data[:size], data[size:]
         self.buf = io.BytesIO()
