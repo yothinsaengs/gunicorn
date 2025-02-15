@@ -218,7 +218,7 @@ class Body:
             return ret
 
         while size > self.buf.tell():
-            data = self.reader.read(1024)
+            data = self.reader.read(1024**2)
             if not data:
                 break
             self.buf.write(data)
